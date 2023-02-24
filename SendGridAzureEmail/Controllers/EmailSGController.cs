@@ -1,16 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using SendGrid.Helpers.Mail;
-using SendGrid;
-using SendGridAzureEmail.Models;
+﻿using SendGridAzureEmail.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using System.Net.Mail;
 using System.Threading.Tasks;
-using System.Data;
 using SendGridAzureEmail.Class;
 
 namespace SendGridAzureEmail.Controllers
