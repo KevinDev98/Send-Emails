@@ -8,36 +8,54 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Net.Mail;
+using System.Threading.Tasks;
+using System.Data;
+using SendGridAzureEmail.Class;
 
 namespace SendGridAzureEmail.Controllers
 {
     public class EmailSGController : ApiController
     {
-        // GET: api/EmailSG
-        //public IEnumerable<string> Get()
-        //{
-        //    return new string[] { "value1", "value2" };
-        //}
-        // GET: api/EmailSG/5
-        // POST: api/EmailSG
-        public IActionResult SendEmail([FromBody] EmailModel parametros)
+        SecurityClass security = new SecurityClass();
+        ResponseModel response = new ResponseModel();
+
+        public async Task<int> SendEmail2([FromBody] EmailModel parametros)
         {
-            string keySG = "DtoTSqG3OJ18gPXAw.aQLsI1bCkitm4pQnob6Gv4f7ehlx2H3lmDR5vrouroc";
-            SendGridClient client = new SendGridClient(keySG);
+            MailMessage mail = new MailMessage();
+            String usermail = parametros.EmailsAddressFROM;
+            String passwordmail = security.DesEncriptar("SwBlAHYAaQBuAGkAbgBnAGkAbgBmAA==");
+            mail.From = new MailAddress(usermail);
 
-            //var from2 = new EmailAddress("test1@example.com", "Example User 1");
-            //EmailAddress(«test2@example.com», «Example User 2»)
-            var from = new EmailAddress(parametros.EmailsAddressFROM);
-            List<EmailAddress> Para = parametros.EmailsAddressTO;
-            var subject = parametros.Subject;
-
-            var htmlContent = "< strong > Hello world with HTML content</ strong >";
-            var plaintextContent = "Hello world with TEXT content";
-            bool displayRecipients = false; // set this to true if you want recipients to see each others mail id
-
-            var msg = MailHelper.CreateSingleEmailToMultipleRecipients(from, Para, subject, plaintextContent, htmlContent, displayRecipients);
-            var response = client.SendEmailAsync(msg);
-            return (IActionResult)Json(response);
+            for (int i = 0; i < parametros.EmailsAddressTO.Count; i++)
+            {
+                mail.To.Add(parametros.EmailsAddressTO[i]);
+            }
+            mail.Subject = parametros.Subject.ToString();
+            mail.Body = parametros.Messagge; //"<h2 style=\"color:red;\">" + "HOLA" + "</h2>";
+            mail.IsBodyHtml = true;
+            mail.Priority = MailPriority.Normal;
+            SmtpClient smtpClient = new SmtpClient();
+            smtpClient.Host = security.DesEncriptar("cwBtAHQAcAAuAG8AZgBmAGkAYwBlADMANgA1AC4AYwBvAG0A");
+            string port=security.DesEncriptar("NQA4ADcA");
+            smtpClient.Port =Convert.ToInt32(port);
+            smtpClient.EnableSsl = true;
+            smtpClient.UseDefaultCredentials = true;
+            NetworkCredential credential =
+                new NetworkCredential(usermail, passwordmail);
+            smtpClient.Credentials = credential;
+            try
+            {
+                await smtpClient.SendMailAsync(mail);
+                response.CodeResponse = 1;
+                response.MessageResponse = "Email enviado correctamente";
+            }
+            catch (Exception ex)
+            {
+                response.CodeResponse = 0;
+                response.MessageResponse = "Email NO Enviado";
+            }
+            return response.CodeResponse;
         }
     }
 }

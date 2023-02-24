@@ -10,7 +10,7 @@ namespace SendGridAzureEmail.Models
     {
         public List<Dictionary<string, object>> jsonmessage { get; set; }
         public string Messagge { get; set; }
-        public List<EmailAddress> EmailsAddressTO { get; set; }
+        public List<String> EmailsAddressTO { get; set; }
         public string EmailsAddressFROM { get; set; }
         public string Subject { get; set; }
         public bool displayRecipients { get; set; }
