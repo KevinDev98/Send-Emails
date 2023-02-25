@@ -7,9 +7,11 @@ using System.Web;
 
 namespace SendGridAzureEmail.Class
 {
-    public class Azure
+    public class AzureClass
     {
         SecurityClass Security = new SecurityClass();
+        static BlobContainerClient container;
+        static BlobClient BlobStrg;
         static string Str_Connect = "RABlAGYAYQB1AGwAdABFAG4AZABwAG8AaQBuAHQAcwBQAHIAbwB0AG8AYwBvAGwAPQBoAHQAdABwAHMAOwBBAGMAYwBvAHUAbgB0AE4AYQBtAGUAPQBzAHQAbwByAGEAZwBlAGEAYwBjAG8AdQBuAHQAZQB0AGwAOQA4ADsAQQBjAGMAbwB1AG4AdABLAGUAeQA9ADAATwBkACsAbQBhAGsAZwBoAG0AbwBZAEsATgBIAEMAQgBnAHEAVQBRAHQAbABtADkAdAA3AC8AMAB3AEoAUQBsAFcAWgBiAGoAawBUAHoAOABxAEMASgBVAC8AUQBTAEYASQBUAG4ALwBUAHEAVwBUAFEAYQAvAHoARQBrAFIAQwAzADMAYwB1ADAAcQBTAFcAbgBuAHYAKwBBAFMAdABiAEEANABtACsAUQA9AD0AOwBFAG4AZABwAG8AaQBuAHQAUwB1AGYAZgBpAHgAPQBjAG8AcgBlAC4AdwBpAG4AZABvAHcAcwAuAG4AZQB0AA==";
         public List<String> ListBlobFile(string PathBlob, string ContainerBlobName)
         {
@@ -23,6 +25,13 @@ namespace SendGridAzureEmail.Class
             }
             //container.UploadBlob();
             return listName;
+        }
+        public string GetUrlContainer(string ContainerName)//Obtiene la URL del contenedor
+        {
+            string Str_Connect2 = Security.DesEncriptar(Str_Connect);
+            BlobStrg = new BlobClient(Str_Connect2, ContainerName, "");
+            string url = BlobStrg.Uri.ToString() + "/";
+            return url;
         }
     }
 }
