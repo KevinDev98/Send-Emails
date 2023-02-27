@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Web.UI.HtmlControls;
 using System.Net.Mime;
 using System.IO;
+using Microsoft.AspNetCore.Mvc;
 
 namespace SendGridAzureEmail.Controllers
 {
@@ -26,7 +27,7 @@ namespace SendGridAzureEmail.Controllers
         Attachment data;
         ContentDisposition disposition;
         Stream streamAzure;
-        public async Task<int> SendEmailContainer([FromBody] EmailModel parametros)
+        public string SendEmailContainer([FromBody] EmailModel parametros)
         {
             //Obtención de archivos
             string urlcont = azure.GetUrl(parametros.Container);
@@ -80,19 +81,20 @@ namespace SendGridAzureEmail.Controllers
 
             try
             {
-                await smtpClient.SendMailAsync(mail);//Envio del correo
+                //await smtpClient.SendMailAsync(mail);//Envio del correo
+                smtpClient.Send(mail);//Envio del correo
                 response.CodeResponse = 1;
                 response.MessageResponse = "Email enviado correctamente";
             }
             catch (Exception ex)
             {
                 response.CodeResponse = 0;
-                response.MessageResponse = "Email NO Enviado";
+                response.MessageResponse = "Email NO Enviado "+ ex.Message;
             }
-            return response.CodeResponse;
+            return response.MessageResponse;
         }
 
-        public async Task<int> SendNotify([FromBody] EmailModel parametros)
+        public string SendNotify([FromBody] EmailModel parametros)
         {
             //definiendo remitente
             usermail = security.DesEncriptar("ZABhAG4ALgBnAHQAegBlAGwAaQBvAHMAYQBAAGcAbQBhAGkAbAAuAGMAbwBtAA==");
@@ -131,19 +133,20 @@ namespace SendGridAzureEmail.Controllers
 
             try
             {
-                await smtpClient.SendMailAsync(mail);//Envio del correo
+                //await smtpClient.SendMailAsync(mail);//Envio del correo
+                smtpClient.Send(mail);//Envio del correo
                 response.CodeResponse = 1;
                 response.MessageResponse = "Email enviado correctamente";
             }
             catch (Exception ex)
             {
                 response.CodeResponse = 0;
-                response.MessageResponse = "Email NO Enviado";
+                response.MessageResponse = "Email NO Enviado " + ex.Message;
             }
-            return response.CodeResponse;
+            return response.MessageResponse;
         }
 
-        public async Task<int> SendDocumentsReports([FromBody] EmailModel parametros)
+        public string SendDocumentsReports([FromBody] EmailModel parametros)
         {
             ////Obtención de archivos
             string urlcont = azure.GetUrl(parametros.Container);
@@ -193,16 +196,17 @@ namespace SendGridAzureEmail.Controllers
 
             try
             {
-                await smtpClient.SendMailAsync(mail);//Envio del correo
+                //await smtpClient.SendMailAsync(mail);//Envio del correo
+                smtpClient.Send(mail);//Envio del correo
                 response.CodeResponse = 1;
                 response.MessageResponse = "Email enviado correctamente";
             }
             catch (Exception ex)
             {
                 response.CodeResponse = 0;
-                response.MessageResponse = "Email NO Enviado";
+                response.MessageResponse = "Email NO Enviado "+ ex.Message;
             }
-            return response.CodeResponse;
+            return response.MessageResponse;
         }
     }
 }
