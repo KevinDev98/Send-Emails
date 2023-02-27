@@ -24,6 +24,7 @@ namespace SendGridAzureEmail.Controllers
         String usermail, passwordmail;
         string v_Html0, v_Html1, v_Html2, v_Html3;
         string sendfile;
+        string port;
         Attachment data;
         ContentDisposition disposition;
         Stream streamAzure;
@@ -72,10 +73,10 @@ namespace SendGridAzureEmail.Controllers
             //Configuración de envio
             mail.Priority = MailPriority.Normal;
             smtpClient.Host = security.DesEncriptar("cwBtAHQAcAAuAG8AZgBmAGkAYwBlADMANgA1AC4AYwBvAG0A");
-            string port = security.DesEncriptar("NQA4ADcA");
+            port = security.DesEncriptar("NQA4ADcA");
             smtpClient.Port = Convert.ToInt32(port);
             smtpClient.EnableSsl = true;
-            smtpClient.UseDefaultCredentials = true;
+            smtpClient.UseDefaultCredentials = false;
             NetworkCredential credential = new NetworkCredential(usermail, passwordmail);
             smtpClient.Credentials = credential;
 
@@ -114,20 +115,21 @@ namespace SendGridAzureEmail.Controllers
             if (parametros.Type)
             {
                 mail.Body = "<h3 style=\"color:green;\">" + parametros.Messagge + "</h3>";
+                mail.Priority = MailPriority.Normal;
             }
             else
             {
                 mail.Body = "<h3 style=\"color:red;\">" + parametros.Messagge + "</h3>";
+                mail.Priority = MailPriority.High;
             }            
             mail.IsBodyHtml = true;
 
-            //Configuración de envio
-            mail.Priority = MailPriority.High;
+            //Configuración de envio            
             smtpClient.Host = security.DesEncriptar("cwBtAHQAcAAuAG8AZgBmAGkAYwBlADMANgA1AC4AYwBvAG0A");
-            string port = security.DesEncriptar("NQA4ADcA");
+            port = security.DesEncriptar("NQA4ADcA");
             smtpClient.Port = Convert.ToInt32(port);
             smtpClient.EnableSsl = true;
-            smtpClient.UseDefaultCredentials = true;
+            smtpClient.UseDefaultCredentials = false;
             NetworkCredential credential = new NetworkCredential(usermail, passwordmail);
             smtpClient.Credentials = credential;
 
@@ -187,10 +189,10 @@ namespace SendGridAzureEmail.Controllers
             //Configuración de envio
             mail.Priority = MailPriority.High;
             smtpClient.Host = security.DesEncriptar("cwBtAHQAcAAuAG8AZgBmAGkAYwBlADMANgA1AC4AYwBvAG0A");
-            string port = security.DesEncriptar("NQA4ADcA");
+            port = security.DesEncriptar("NQA4ADcA");
             smtpClient.Port = Convert.ToInt32(port);
             smtpClient.EnableSsl = true;
-            smtpClient.UseDefaultCredentials = true;
+            smtpClient.UseDefaultCredentials = false;
             NetworkCredential credential = new NetworkCredential(usermail, passwordmail);
             smtpClient.Credentials = credential;
 
