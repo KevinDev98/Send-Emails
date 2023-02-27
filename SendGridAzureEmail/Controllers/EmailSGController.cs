@@ -8,6 +8,8 @@ using SendGridAzureEmail.Class;
 using System.Data;
 using System.Collections.Generic;
 using System.Web.UI.HtmlControls;
+using System.Net.Mime;
+using System.IO;
 
 namespace SendGridAzureEmail.Controllers
 {
@@ -16,79 +18,42 @@ namespace SendGridAzureEmail.Controllers
         SecurityClass security = new SecurityClass();
         ResponseModel response = new ResponseModel();
         AzureClass azure = new AzureClass();
-        public void ReporteAsignacion_Mail(ref string Subject, string Titulo, object V_Msg, int v_bandera, string Horaejecucion)
-        {
-            //string v_mensaje = "";
-            //if (v_bandera == 1)
-            //{
-            //    string v_Html1 = "";
-            //    string v_Html2 = "";
-            //    string v_Html3 = "";
-            //    v_Html1 = "<table class='table align-content-start table-bordered shadow'> " + "<tr>" + "<td colspan=\"12\" style=\"background-color: #3366CC; color: #FFFFFF; font-weight: bold; text-align: center;\">" + Subject + "" + Horaejecucion + "</td> " + "</tr> ";
-            //    if (V_Msg.Tables(0).Rows.Count > 0)
-            //    {
-            //        v_Html2 = " <tr> " + " <td style=\"background-color: #E8E8EC; font-weight: bold\">NOMBRE</td>" + " <td style=\"background-color: #E8E8EC; font-weight: bold\">PUESTO</td> " + " <td style=\"background-color: #E8E8EC; font-weight: bold\">BUCKETS ASIGNADOS</td> " + " <td style=\"background-color: #E8E8EC; font-weight: bold\">SUCURSALES ASIGNADAS</td> " + " <td style=\"background-color: #E8E8EC; font-weight: bold\">CAPACIDAD ASIGNACIÓN WEB</td> " + " <td style=\"background-color: #E8E8EC; font-weight: bold\">CAPACIDAD ASIGNACIÓN MOVIL</td> " + " <td style=\"background-color: #E8E8EC; font-weight: bold\">TOTAL ASIGNADAS</td> " + " <td style=\"background-color: #E8E8EC; font-weight: bold\">ASIGNACIÓN WEB POR REPARTO DE CUENTAS</td> " + " <td style=\"background-color: #E8E8EC; font-weight: bold\">OTRAS ASIGNACIONES WEB</td> " + " <td style=\"background-color: #E8E8EC; font-weight: bold\">ASIGNACIÓN MOVIL POR ORIGINACIÓN DE CREDITO</td> " + " <td style=\"background-color: #E8E8EC; font-weight: bold\">ASIGNACIÓN MOVIL POR REPARTO DE CUENTAS</td> " + " <td style=\"background-color: #E8E8EC; font-weight: bold\">OTRAS ASIGNACIONES MOVIL </td> " + " </tr> ";
-            //        for (int a = 0; a <= V_Msg.Tables(0).Rows.Count - 1; a++)
-            //            v_Html2 = v_Html2 + " <tr> " + " <td>" + V_Msg.Tables(0).Rows(a).Item("NOMBRE") + "</td> " + " <td>" + V_Msg.Tables(0).Rows(a).Item("PUESTO") + "</td> " + " <td>" + V_Msg.Tables(0).Rows(a).Item("BUCKETS ASIGNADOS") + "</td> " + " <td>" + V_Msg.Tables(0).Rows(a).Item("SUCURSALES ASIGNADAS") + "</td> " + " <td>" + V_Msg.Tables(0).Rows(a).Item("CAPACIDAD ASIGNACIÓN WEB") + "</td> " + " <td>" + V_Msg.Tables(0).Rows(a).Item("CAPACIDAD ASIGNACIÓN MOVIL") + "</td> " + " <td>" + V_Msg.Tables(0).Rows(a).Item("TOTAL ASIGNADAS") + "</td> " + " <td>" + V_Msg.Tables(0).Rows(a).Item("ASIGNACIÓN WEB POR REPARTO DE CUENTAS") + "</td> " + " <td>" + V_Msg.Tables(0).Rows(a).Item("OTRAS ASIGNACIONES WEB") + "</td> " + " <td>" + V_Msg.Tables(0).Rows(a).Item("ASIGNACIÓN MOVIL POR ORIGINACIÓN DE CREDITO") + "</td> " + " <td>" + V_Msg.Tables(0).Rows(a).Item("ASIGNACIÓN MOVIL POR REPARTO DE CUENTAS") + "</td> " + " <td>" + V_Msg.Tables(0).Rows(a).Item("OTRAS ASIGNACIONES MOVIL") + "</td> " + " </tr> ";
-            //        v_Html3 = " </table>";
-            //        v_mensaje = v_Html1 + v_Html2 + v_Html3;
-            //    }
-            //    else
-            //    {
-            //        v_mensaje = V_Msg.ToString();
-            //    }
-            //}
-            //System.Net.Mail.MailMessage msg = new System.Net.Mail.MailMessage();
-            //msg.From = new MailAddress("mc.notificaciones@alternativa19delsur.com", Titulo, System.Text.Encoding.UTF8);
-            //msg.Subject = Subject;
-            //msg.SubjectEncoding = System.Text.Encoding.UTF8;
-            //msg.AlternateViews.Add(htmlView);
-            //msg.BodyEncoding = System.Text.Encoding.UTF8;
-            //msg.IsBodyHtml = true;
-
-            //ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
-            //SmtpClient client = new SmtpClient();
-            //client.UseDefaultCredentials = false;
-            //client.Credentials = new System.Net.NetworkCredential("mc.notificaciones@alternativa19delsur.com", "43q6kKnNU*");
-            //// client.Port = "587"
-            //client.Host = "mail.centraldomainnames.com";
-            //client.EnableSsl = true;
-            //try
-            //{
-            //    client.Send(msg);
-            //}
-            //catch (Net.Mail.SmtpException ex)
-            //{
-            //    SP.AUDITORIA_GLOBAL(0, tmpUSUARIO("CAT_LO_USUARIO"), "Administrador-Cartera general", "Fallo al enviar reporte de asignación" + ex.Message.ToString());
-            //}
-        }
+        MailMessage mail = new MailMessage();
+        SmtpClient smtpClient = new SmtpClient();
+        String usermail, passwordmail;
+        string v_Html0, v_Html1, v_Html2, v_Html3;
+        string sendfile;
+        Attachment data;
+        ContentDisposition disposition;
+        Stream streamAzure;
         public async Task<int> SendEmailContainer([FromBody] EmailModel parametros)
         {
-            MailMessage mail = new MailMessage();
-            String usermail = parametros.EmailsAddressFROM;
-            String passwordmail = security.DesEncriptar("SwBlAHYAaQBuAGkAbgBnAGkAbgBmAA==");
+            //Obtención de archivos
+            string urlcont = azure.GetUrl(parametros.Container);
+            List<string> ContainersFiles = azure.ListBlobFile(PathBlob: urlcont, ContainerBlobName: parametros.Container);
+            //Inicialización de remitente
+            usermail = security.DesEncriptar("ZABhAG4ALgBnAHQAegBlAGwAaQBvAHMAYQBAAGcAbQBhAGkAbAAuAGMAbwBtAA==");
+            passwordmail = security.DesEncriptar("SwBlAHYAaQBuAGkAbgBnAGkAbgBmAA==");
             mail.From = new MailAddress(usermail);
-
+            // Añadiendo destinatarios
             for (int i = 0; i < parametros.EmailsAddressTO.Count; i++)
             {
                 mail.To.Add(parametros.EmailsAddressTO[i]);
             }
-            mail.Subject = parametros.Subject.ToString();
-            string urlcont = azure.GetUrlContainer(parametros.Container);
-            List<string> ContainersFiles = azure.ListBlobFile(PathBlob: urlcont, ContainerBlobName: parametros.Container);
-
-            string v_Html1 = "";
-            string v_Html2 = "";
-            string v_Html3 = "";            
-            
-            v_Html1 = "<table class='table align-content-start table-bordered shadow'> " + "<tr>" + "<td colspan=\"2\" style=\"background-color: #3366CC; color: #FFFFFF; font-weight: bold; text-align: center;\">Archivos procesados en el contenedor "+parametros.Container +"</td> " + "</tr> ";
-            if (ContainersFiles.Count> 0)
+            for (int i = 0; i < parametros.EmailsAddressCC.Count; i++)
+            {
+                mail.CC.Add(parametros.EmailsAddressCC[i]);
+            }
+            mail.Subject = parametros.Subject.ToString();//Titulo del correo            
+            //Definiendo estructura del mensaje
+            v_Html0 = "<p>" + parametros.Messagge + "</p>" + "<br>";
+            v_Html1 = v_Html0 + "<table class='table align-content-start table-bordered shadow'> " + "<tr>" + "<td colspan=\"2\" style=\"background-color: #3366CC; color: #FFFFFF; font-weight: bold; text-align: center;\">Archivos procesados en el contenedor " + parametros.Container + "</td> " + "</tr> ";
+            if (ContainersFiles.Count > 0)
             {
                 v_Html2 = " <tr> " + " <td style=\"background-color: #E8E8EC; font-weight: bold\">NOMBRE</td>" + " <td style=\"background-color: #E8E8EC; font-weight: bold\">URL</td> " + " </tr> ";
-                for (int z=0; z<ContainersFiles.Count;z++)
+                for (int z = 0; z < ContainersFiles.Count; z++)
                 {
-                    v_Html2 = v_Html2 + " <tr> " + " <td>" + ContainersFiles[z] + "</td> " + " <td>" + urlcont+ContainersFiles[z] + "</td>" + " </tr> ";
+                    v_Html2 = v_Html2 + " <tr> " + " <td>" + ContainersFiles[z] + "</td> " + " <td>" + urlcont + ContainersFiles[z] + "</td>" + " </tr> ";
                 }
                 v_Html3 = " </table>";
                 parametros.Messagge = v_Html1 + v_Html2 + v_Html3;
@@ -99,21 +64,136 @@ namespace SendGridAzureEmail.Controllers
                 mail.Body = parametros.Messagge; //"<h2 style=\"color:red;\">" + "HOLA" + "</h2>";
                 mail.IsBodyHtml = false;
             }
+            //Añaiendo el mensaje
             var htmlView = AlternateView.CreateAlternateViewFromString(parametros.Messagge, null, "text/html");
             mail.AlternateViews.Add(htmlView);
+
+            //Configuración de envio
             mail.Priority = MailPriority.Normal;
-            SmtpClient smtpClient = new SmtpClient();
             smtpClient.Host = security.DesEncriptar("cwBtAHQAcAAuAG8AZgBmAGkAYwBlADMANgA1AC4AYwBvAG0A");
             string port = security.DesEncriptar("NQA4ADcA");
             smtpClient.Port = Convert.ToInt32(port);
             smtpClient.EnableSsl = true;
             smtpClient.UseDefaultCredentials = true;
-            NetworkCredential credential =
-                new NetworkCredential(usermail, passwordmail);
+            NetworkCredential credential = new NetworkCredential(usermail, passwordmail);
             smtpClient.Credentials = credential;
+
             try
             {
-                await smtpClient.SendMailAsync(mail);
+                await smtpClient.SendMailAsync(mail);//Envio del correo
+                response.CodeResponse = 1;
+                response.MessageResponse = "Email enviado correctamente";
+            }
+            catch (Exception ex)
+            {
+                response.CodeResponse = 0;
+                response.MessageResponse = "Email NO Enviado";
+            }
+            return response.CodeResponse;
+        }
+
+        public async Task<int> SendNotify([FromBody] EmailModel parametros)
+        {
+            //definiendo remitente
+            usermail = security.DesEncriptar("ZABhAG4ALgBnAHQAegBlAGwAaQBvAHMAYQBAAGcAbQBhAGkAbAAuAGMAbwBtAA==");
+            passwordmail = security.DesEncriptar("SwBlAHYAaQBuAGkAbgBnAGkAbgBmAA==");
+            mail.From = new MailAddress(usermail);
+            //añdiendo destinatarios
+            for (int i = 0; i < parametros.EmailsAddressTO.Count; i++)
+            {
+                mail.To.Add(parametros.EmailsAddressTO[i]);
+            }
+            for (int i = 0; i < parametros.EmailsAddressCC.Count; i++)
+            {
+                mail.CC.Add(parametros.EmailsAddressCC[i]);
+            }
+            mail.Subject = parametros.Subject.ToString();
+            //Definiendo mensaje y estructura
+            if (parametros.Type)
+            {
+                mail.Body = "<h3 style=\"color:green;\">" + parametros.Messagge + "</h3>";
+            }
+            else
+            {
+                mail.Body = "<h3 style=\"color:red;\">" + parametros.Messagge + "</h3>";
+            }            
+            mail.IsBodyHtml = true;
+
+            //Configuración de envio
+            mail.Priority = MailPriority.High;
+            smtpClient.Host = security.DesEncriptar("cwBtAHQAcAAuAG8AZgBmAGkAYwBlADMANgA1AC4AYwBvAG0A");
+            string port = security.DesEncriptar("NQA4ADcA");
+            smtpClient.Port = Convert.ToInt32(port);
+            smtpClient.EnableSsl = true;
+            smtpClient.UseDefaultCredentials = true;
+            NetworkCredential credential = new NetworkCredential(usermail, passwordmail);
+            smtpClient.Credentials = credential;
+
+            try
+            {
+                await smtpClient.SendMailAsync(mail);//Envio del correo
+                response.CodeResponse = 1;
+                response.MessageResponse = "Email enviado correctamente";
+            }
+            catch (Exception ex)
+            {
+                response.CodeResponse = 0;
+                response.MessageResponse = "Email NO Enviado";
+            }
+            return response.CodeResponse;
+        }
+
+        public async Task<int> SendDocumentsReports([FromBody] EmailModel parametros)
+        {
+            ////Obtención de archivos
+            string urlcont = azure.GetUrl(parametros.Container);
+            List<string> ContainersFiles = azure.ListBlobFile(PathBlob: urlcont, ContainerBlobName: parametros.Container);
+            //definiendo remitente
+            usermail = security.DesEncriptar("ZABhAG4ALgBnAHQAegBlAGwAaQBvAHMAYQBAAGcAbQBhAGkAbAAuAGMAbwBtAA==");
+            passwordmail = security.DesEncriptar("SwBlAHYAaQBuAGkAbgBnAGkAbgBmAA==");
+            mail.From = new MailAddress(usermail);
+            //añdiendo destinatarios
+            for (int i = 0; i < parametros.EmailsAddressTO.Count; i++)
+            {                
+                mail.To.Add(parametros.EmailsAddressTO[i]);
+            }
+            for (int i = 0; i < parametros.EmailsAddressCC.Count; i++)
+            {
+                mail.CC.Add(parametros.EmailsAddressCC[i]);
+            }
+            mail.Subject = parametros.Subject.ToString();
+            //Definiendo mensaje y estructura
+            mail.Body = "<h4>" + parametros.Messagge + "</h4>";
+            mail.IsBodyHtml = true;
+            
+            for (int s=0; s< ContainersFiles.Count; s++)
+            {
+                sendfile = urlcont + ContainersFiles[s];
+                string FName = ContainersFiles[s].ToString();
+                for (int z=0; z<parametros.NombresArchivos.Count;z++)
+                {
+                    if (parametros.NombresArchivos[z].ToString() == FName)
+                    {
+                        streamAzure = azure.StreamGetStream(parametros.Container, FName);
+                        // Añadiendo archivos.
+                        data = new Attachment(streamAzure, FName, MediaTypeNames.Application.Octet);
+                        mail.Attachments.Add(data);
+                    }
+                }                                
+            }          
+            //Configuración de envio
+            mail.Priority = MailPriority.High;
+            smtpClient.Host = security.DesEncriptar("cwBtAHQAcAAuAG8AZgBmAGkAYwBlADMANgA1AC4AYwBvAG0A");
+            string port = security.DesEncriptar("NQA4ADcA");
+            smtpClient.Port = Convert.ToInt32(port);
+            smtpClient.EnableSsl = true;
+            smtpClient.UseDefaultCredentials = true;
+            NetworkCredential credential = new NetworkCredential(usermail, passwordmail);
+            smtpClient.Credentials = credential;
+
+            try
+            {
+                await smtpClient.SendMailAsync(mail);//Envio del correo
                 response.CodeResponse = 1;
                 response.MessageResponse = "Email enviado correctamente";
             }
