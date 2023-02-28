@@ -30,7 +30,7 @@ namespace SendGridAzureEmail.Controllers
         string ky;
         public async Task<int> PostEMailSG([FromBody] SendGridModel parametros)
         {
-            ky = security.DesEncriptar(parametros.key);
+            ky = parametros.key;//security.DesEncriptar(parametros.key);
             SendGridClient client = new SendGridClient(ky);
 
             //var from2 = new EmailAddress("test1@example.com", "Example User 1");
