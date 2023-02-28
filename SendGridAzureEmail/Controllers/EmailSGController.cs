@@ -27,9 +27,10 @@ namespace SendGridAzureEmail.Controllers
         string sendfile;
         int result;
         Stream streamAzure;
-        string ky = "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";        
+        string ky;
         public async Task<int> PostEMailSG([FromBody] SendGridModel parametros)
         {
+            ky = security.DesEncriptar("UwBHAC4AagB3AGkAYgAzAHoAQgBNAFEAUABlAFgAUABfAGIAUQA4AG4AdgBIAFkAdwAuADEAWAB0AFgAYgBrADIATgByAFMANQBpAFYAcwBFADEAWQBoAE0AOQBzAFEAQwBlAG8AdQBNAGcAOAAxAFkAcABWAHEAOABlADAAYQBDAHkAZABIADgA");
             SendGridClient client = new SendGridClient(ky);
 
             //var from2 = new EmailAddress("test1@example.com", "Example User 1");
