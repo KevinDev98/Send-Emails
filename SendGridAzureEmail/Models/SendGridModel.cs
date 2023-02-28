@@ -15,5 +15,6 @@ namespace SendGridAzureEmail.Models
         public bool displayRecipients { get; set; }
         public string HTML { get; set; }
         public string TEXT { get; set; }
+        public string key { get; set; }
     }
 }
