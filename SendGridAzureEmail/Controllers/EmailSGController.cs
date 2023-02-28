@@ -75,7 +75,9 @@ namespace SendGridAzureEmail.Controllers
             smtpClient.Host = security.DesEncriptar("cwBtAHQAcAAuAG8AZgBmAGkAYwBlADMANgA1AC4AYwBvAG0A");
             port = security.DesEncriptar("NQA4ADcA");
             smtpClient.Port = Convert.ToInt32(port);
+            smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
             smtpClient.EnableSsl = true;
+
             smtpClient.UseDefaultCredentials = false;
             NetworkCredential credential = new NetworkCredential(usermail, passwordmail);
             smtpClient.Credentials = credential;
@@ -90,7 +92,7 @@ namespace SendGridAzureEmail.Controllers
             catch (Exception ex)
             {
                 response.CodeResponse = 0;
-                response.MessageResponse = "Email NO Enviado " + ex.Message;
+                response.MessageResponse = "Email NO Enviado " + ex.Message +" " + ex.InnerException;
             }
             return response.MessageResponse;
         }
@@ -126,8 +128,10 @@ namespace SendGridAzureEmail.Controllers
 
             //Configuración de envio            
             smtpClient.Host = security.DesEncriptar("cwBtAHQAcAAuAG8AZgBmAGkAYwBlADMANgA1AC4AYwBvAG0A");
+            smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
             port = security.DesEncriptar("NQA4ADcA");
             smtpClient.Port = Convert.ToInt32(port);
+
             smtpClient.EnableSsl = true;
             smtpClient.UseDefaultCredentials = false;
             NetworkCredential credential = new NetworkCredential(usermail, passwordmail);
@@ -143,7 +147,7 @@ namespace SendGridAzureEmail.Controllers
             catch (Exception ex)
             {
                 response.CodeResponse = 0;
-                response.MessageResponse = "Email NO Enviado " + ex.Message;
+                response.MessageResponse = "Email NO Enviado " + ex.Message +" "+ ex.InnerException;
             }
             return response.MessageResponse;
         }
@@ -209,7 +213,9 @@ namespace SendGridAzureEmail.Controllers
             smtpClient.Host = security.DesEncriptar("cwBtAHQAcAAuAG8AZgBmAGkAYwBlADMANgA1AC4AYwBvAG0A");
             port = security.DesEncriptar("NQA4ADcA");
             smtpClient.Port = Convert.ToInt32(port);
+            smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
             smtpClient.EnableSsl = true;
+
             smtpClient.UseDefaultCredentials = false;
             NetworkCredential credential = new NetworkCredential(usermail, passwordmail);
             smtpClient.Credentials = credential;
@@ -224,7 +230,7 @@ namespace SendGridAzureEmail.Controllers
             catch (Exception ex)
             {
                 response.CodeResponse = 0;
-                response.MessageResponse = "Email NO Enviado " + ex.Message;
+                response.MessageResponse = "Email NO Enviado " + ex.Message + " "+ ex.InnerException;
             }
             return response.MessageResponse;
         }
