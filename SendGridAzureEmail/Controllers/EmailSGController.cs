@@ -90,7 +90,7 @@ namespace SendGridAzureEmail.Controllers
             catch (Exception ex)
             {
                 response.CodeResponse = 0;
-                response.MessageResponse = "Email NO Enviado "+ ex.Message;
+                response.MessageResponse = "Email NO Enviado " + ex.Message;
             }
             return response.MessageResponse;
         }
@@ -121,7 +121,7 @@ namespace SendGridAzureEmail.Controllers
             {
                 mail.Body = "<h3 style=\"color:red;\">" + parametros.Messagge + "</h3>";
                 mail.Priority = MailPriority.High;
-            }            
+            }
             mail.IsBodyHtml = true;
 
             //Configuración de envio            
@@ -159,7 +159,7 @@ namespace SendGridAzureEmail.Controllers
             mail.From = new MailAddress(usermail);
             //añdiendo destinatarios
             for (int i = 0; i < parametros.EmailsAddressTO.Count; i++)
-            {                
+            {
                 mail.To.Add(parametros.EmailsAddressTO[i]);
             }
             for (int i = 0; i < parametros.EmailsAddressCC.Count; i++)
@@ -170,22 +170,40 @@ namespace SendGridAzureEmail.Controllers
             //Definiendo mensaje y estructura
             mail.Body = "<h4>" + parametros.Messagge + "</h4>";
             mail.IsBodyHtml = true;
-            
-            for (int s=0; s< ContainersFiles.Count; s++)
+
+            for (int s = 0; s < ContainersFiles.Count; s++)
             {
                 sendfile = urlcont + ContainersFiles[s];
                 string FName = ContainersFiles[s].ToString();
-                for (int z=0; z<parametros.NombresArchivos.Count;z++)
+                if (parametros.NombresArchivos.Count == 1)
                 {
-                    if (parametros.NombresArchivos[z].ToString() == FName)
+                    streamAzure = azure.StreamGetStream(parametros.Container, FName);
+                    // Añadiendo archivos.
+                    data = new Attachment(streamAzure, FName, MediaTypeNames.Application.Octet);
+                    mail.Attachments.Add(data);
+                }
+                else if (parametros.NombresArchivos.Count > 1)
+                {
+                    for (int z = 0; z < parametros.NombresArchivos.Count; z++)
                     {
-                        streamAzure = azure.StreamGetStream(parametros.Container, FName);
-                        // Añadiendo archivos.
-                        data = new Attachment(streamAzure, FName, MediaTypeNames.Application.Octet);
-                        mail.Attachments.Add(data);
+                        if (parametros.NombresArchivos[z].ToString() == FName)
+                        {
+                            streamAzure = azure.StreamGetStream(parametros.Container, FName);
+                            // Añadiendo archivos.
+                            data = new Attachment(streamAzure, FName, MediaTypeNames.Application.Octet);
+                            mail.Attachments.Add(data);
+                        }
                     }
-                }                                
-            }          
+                }
+                else
+                {
+                    streamAzure = azure.StreamGetStream(parametros.Container, FName);
+                    // Añadiendo archivos.
+                    data = new Attachment(streamAzure, FName, MediaTypeNames.Application.Octet);
+                    mail.Attachments.Add(data);
+                }
+
+            }
             //Configuración de envio
             mail.Priority = MailPriority.High;
             smtpClient.Host = security.DesEncriptar("cwBtAHQAcAAuAG8AZgBmAGkAYwBlADMANgA1AC4AYwBvAG0A");
@@ -206,7 +224,7 @@ namespace SendGridAzureEmail.Controllers
             catch (Exception ex)
             {
                 response.CodeResponse = 0;
-                response.MessageResponse = "Email NO Enviado "+ ex.Message;
+                response.MessageResponse = "Email NO Enviado " + ex.Message;
             }
             return response.MessageResponse;
         }
