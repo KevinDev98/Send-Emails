@@ -267,9 +267,11 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Class\Azure.cs" />
     <Compile Include="Class\SecurityClass.cs" />
+    <Compile Include="Class\SendGridEMailClass.cs" />
     <Compile Include="Controllers\EmailMicrosoftController.cs" />
     <Compile Include="Controllers\EmailSGController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\SendEmailController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -336,6 +338,7 @@
     <Folder Include="Data\" />
     <Folder Include="Views\EmailMicrosoft\" />
     <Folder Include="Views\EnvioEmails\" />
+    <Folder Include="Views\SendEmail\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
