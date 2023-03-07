@@ -8,6 +8,7 @@ using System.Web.Http;
 using System.Net;
 using System.Net.Mime;
 using System.IO;
+using System.Configuration;
 
 namespace SendGridAzureEmail.Controllers
 {
@@ -30,8 +31,8 @@ namespace SendGridAzureEmail.Controllers
             string urlcont = azure.GetUrl(parametros.Container);
             List<string> ContainersFiles = azure.ListBlobFile(PathBlob: urlcont, ContainerBlobName: parametros.Container);
             //Inicialización de remitente
-            usermail = security.DesEncriptar("ZABhAG4ALgBnAHQAegBlAGwAaQBvAHMAYQBAAGcAbQBhAGkAbAAuAGMAbwBtAA==");
-            passwordmail = security.DesEncriptar("SwBlAHYAaQBuAGkAbgBnAGkAbgBmAA==");
+            usermail = security.DesEncriptar(ConfigurationManager.AppSettings["MEMail"]); //security.DesEncriptar("ZABhAG4ALgBnAHQAegBlAGwAaQBvAHMAYQBAAGcAbQBhAGkAbAAuAGMAbwBtAA==");
+            passwordmail = security.DesEncriptar(ConfigurationManager.AppSettings["Mpwd"]); //security.DesEncriptar("SwBlAHYAaQBuAGkAbgBnAGkAbgBmAA==");
             mail.From = new MailAddress(usermail);
             // Añadiendo destinatarios
             for (int i = 0; i < parametros.EmailsAddressTO.Count; i++)
@@ -68,8 +69,8 @@ namespace SendGridAzureEmail.Controllers
 
             //Configuración de envio
             mail.Priority = MailPriority.Normal;
-            smtpClient.Host = security.DesEncriptar("cwBtAHQAcAAuAG8AZgBmAGkAYwBlADMANgA1AC4AYwBvAG0A");
-            port = security.DesEncriptar("NQA4ADcA");
+            smtpClient.Host = ConfigurationManager.AppSettings["MHost"];// security.DesEncriptar("cwBtAHQAcAAuAG8AZgBmAGkAYwBlADMANgA1AC4AYwBvAG0A");
+            port = ConfigurationManager.AppSettings["Mport"]; //security.DesEncriptar("NQA4ADcA");
             smtpClient.Port = Convert.ToInt32(port);
             smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
             smtpClient.EnableSsl = true;
@@ -96,8 +97,8 @@ namespace SendGridAzureEmail.Controllers
         public string SendNotify([FromBody] EmailModel parametros)
         {
             //definiendo remitente
-            usermail = security.DesEncriptar("ZABhAG4ALgBnAHQAegBlAGwAaQBvAHMAYQBAAGcAbQBhAGkAbAAuAGMAbwBtAA==");
-            passwordmail = security.DesEncriptar("SwBlAHYAaQBuAGkAbgBnAGkAbgBmAA==");
+            usermail = security.DesEncriptar(ConfigurationManager.AppSettings["MEMail"]); //security.DesEncriptar("ZABhAG4ALgBnAHQAegBlAGwAaQBvAHMAYQBAAGcAbQBhAGkAbAAuAGMAbwBtAA==");
+            passwordmail = security.DesEncriptar(ConfigurationManager.AppSettings["Mpwd"]); //security.DesEncriptar("SwBlAHYAaQBuAGkAbgBnAGkAbgBmAA==");
             mail.From = new MailAddress(usermail);
             //añdiendo destinatarios
             for (int i = 0; i < parametros.EmailsAddressTO.Count; i++)
@@ -123,9 +124,9 @@ namespace SendGridAzureEmail.Controllers
             mail.IsBodyHtml = true;
 
             //Configuración de envio            
-            smtpClient.Host = security.DesEncriptar("cwBtAHQAcAAuAG8AZgBmAGkAYwBlADMANgA1AC4AYwBvAG0A");
+            smtpClient.Host = ConfigurationManager.AppSettings["MHost"]; //security.DesEncriptar("cwBtAHQAcAAuAG8AZgBmAGkAYwBlADMANgA1AC4AYwBvAG0A");
             smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
-            port = security.DesEncriptar("NQA4ADcA");
+            port = ConfigurationManager.AppSettings["Mport"]; //security.DesEncriptar("NQA4ADcA");
             smtpClient.Port = Convert.ToInt32(port);
 
             smtpClient.EnableSsl = true;
@@ -154,8 +155,8 @@ namespace SendGridAzureEmail.Controllers
             string urlcont = azure.GetUrl(parametros.Container);
             List<string> ContainersFiles = azure.ListBlobFile(PathBlob: urlcont, ContainerBlobName: parametros.Container);
             //definiendo remitente
-            usermail = security.DesEncriptar("ZABhAG4ALgBnAHQAegBlAGwAaQBvAHMAYQBAAGcAbQBhAGkAbAAuAGMAbwBtAA==");
-            passwordmail = security.DesEncriptar("SwBlAHYAaQBuAGkAbgBnAGkAbgBmAA==");
+            usermail = security.DesEncriptar(ConfigurationManager.AppSettings["MEMail"]); //security.DesEncriptar("ZABhAG4ALgBnAHQAegBlAGwAaQBvAHMAYQBAAGcAbQBhAGkAbAAuAGMAbwBtAA==");
+            passwordmail = security.DesEncriptar(ConfigurationManager.AppSettings["Mpwd"]); //security.DesEncriptar("SwBlAHYAaQBuAGkAbgBnAGkAbgBmAA==");
             mail.From = new MailAddress(usermail);
             //añdiendo destinatarios
             for (int i = 0; i < parametros.EmailsAddressTO.Count; i++)
@@ -206,8 +207,8 @@ namespace SendGridAzureEmail.Controllers
             }
             //Configuración de envio
             mail.Priority = MailPriority.High;
-            smtpClient.Host = security.DesEncriptar("cwBtAHQAcAAuAG8AZgBmAGkAYwBlADMANgA1AC4AYwBvAG0A");
-            port = security.DesEncriptar("NQA4ADcA");
+            smtpClient.Host = ConfigurationManager.AppSettings["MHost"]; //security.DesEncriptar("cwBtAHQAcAAuAG8AZgBmAGkAYwBlADMANgA1AC4AYwBvAG0A");
+            port = ConfigurationManager.AppSettings["Mport"]; //security.DesEncriptar("NQA4ADcA");
             smtpClient.Port = Convert.ToInt32(port);
             smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
             smtpClient.EnableSsl = true;
