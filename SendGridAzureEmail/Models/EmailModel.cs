@@ -16,6 +16,5 @@ namespace SendGridAzureEmail.Models
         public string Container { get; set; }
         public Boolean Type { get; set; }
         public List<string> NombresArchivos { get; set; }
-        public string key { get; set; }
     }
 }
