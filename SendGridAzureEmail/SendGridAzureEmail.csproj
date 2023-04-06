@@ -269,7 +269,6 @@
     <Compile Include="Class\SecurityClass.cs" />
     <Compile Include="Class\SendGridEMailClass.cs" />
     <Compile Include="Controllers\EmailMicrosoftController.cs" />
-    <Compile Include="Controllers\EmailSGController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\SendEmailController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
