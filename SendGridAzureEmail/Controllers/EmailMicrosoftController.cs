@@ -87,7 +87,7 @@ namespace SendGridAzureEmail.Controllers
                 mail.AlternateViews.Add(htmlView);
 
                 //Configuración de envio
-                mail.Priority = MailPriority.Normal;
+                mail.Priority = MailPriority.Normal; 
                 smtpClient.Host = security.DesEncriptar(ConfigurationManager.AppSettings["MHost"]);
                 port = security.DesEncriptar(ConfigurationManager.AppSettings["Mport"]);
                 smtpClient.Port = Convert.ToInt32(port);
@@ -164,9 +164,9 @@ namespace SendGridAzureEmail.Controllers
 
                 //Configuración de envio            
                 smtpClient.Host = security.DesEncriptar(ConfigurationManager.AppSettings["MHost"]);
-                smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
-                port = security.DesEncriptar(ConfigurationManager.AppSettings["Mport"]); 
+                port = security.DesEncriptar(ConfigurationManager.AppSettings["Mport"]);
                 smtpClient.Port = Convert.ToInt32(port);
+                smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
 
                 smtpClient.EnableSsl = true;
                 smtpClient.UseDefaultCredentials = false;
