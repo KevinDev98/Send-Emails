@@ -150,7 +150,7 @@ namespace SendGridAzureEmail.Controllers
 
                 mail.Subject = parametros.Subject.ToString();
                 //Definiendo mensaje y estructura
-                if (parametros.PriorityHigh)
+                if (!parametros.PriorityHigh)
                 {
                     mail.Body = "<h3 style=\"color:green;\">" + parametros.Messagge + "</h3>";
                     mail.Priority = MailPriority.Normal;
