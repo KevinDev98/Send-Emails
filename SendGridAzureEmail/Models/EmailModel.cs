@@ -14,7 +14,7 @@ namespace SendGridAzureEmail.Models
         public string Subject { get; set; }
         public string Messagge { get; set; }
         public string Container { get; set; }
-        public Boolean Type { get; set; }
+        public Boolean PriorityHigh { get; set; }
         public List<string> NombresArchivos { get; set; }
     }
 }

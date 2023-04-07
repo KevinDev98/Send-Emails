@@ -120,7 +120,7 @@ namespace SendGridAzureEmail.Controllers
         }
         public HttpResponseMessage SendNotify([FromBody] EmailModel parametros)
         {
-            if (string.IsNullOrEmpty(parametros.Subject) || string.IsNullOrEmpty(parametros.Messagge) || parametros.EmailsAddressTO.Count == 0 || parametros.Type == null)
+            if (string.IsNullOrEmpty(parametros.Subject) || string.IsNullOrEmpty(parametros.Messagge) || parametros.EmailsAddressTO.Count == 0 || parametros.PriorityHigh == null)
             {
                 str_response = "Parametros vacios";
                 return Request.CreateResponse(HttpStatusCode.Unauthorized, str_response);
@@ -150,7 +150,7 @@ namespace SendGridAzureEmail.Controllers
 
                 mail.Subject = parametros.Subject.ToString();
                 //Definiendo mensaje y estructura
-                if (parametros.Type)
+                if (parametros.PriorityHigh)
                 {
                     mail.Body = "<h3 style=\"color:green;\">" + parametros.Messagge + "</h3>";
                     mail.Priority = MailPriority.Normal;
@@ -163,10 +163,10 @@ namespace SendGridAzureEmail.Controllers
                 mail.IsBodyHtml = true;
 
                 //Configuración de envio            
-                smtpClient.Host = ConfigurationManager.AppSettings["Host"]; //security.DesEncriptar("cwBtAHQAcAAuAG8AZgBmAGkAYwBlADMANgA1AC4AYwBvAG0A");
-                smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
-                port = ConfigurationManager.AppSettings["port"]; //security.DesEncriptar("NQA4ADcA");
+                smtpClient.Host = security.DesEncriptar(ConfigurationManager.AppSettings["Host"]);
+                port = security.DesEncriptar(ConfigurationManager.AppSettings["port"]);
                 smtpClient.Port = Convert.ToInt32(port);
+                smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
 
                 smtpClient.EnableSsl = true;
                 smtpClient.UseDefaultCredentials = false;
@@ -264,8 +264,8 @@ namespace SendGridAzureEmail.Controllers
                 }
                 //Configuración de envio
                 mail.Priority = MailPriority.High;
-                smtpClient.Host = ConfigurationManager.AppSettings["Host"]; //security.DesEncriptar("cwBtAHQAcAAuAG8AZgBmAGkAYwBlADMANgA1AC4AYwBvAG0A");
-                port = ConfigurationManager.AppSettings["port"]; //security.DesEncriptar("NQA4ADcA");
+                smtpClient.Host = security.DesEncriptar(ConfigurationManager.AppSettings["Host"]);
+                port = security.DesEncriptar(ConfigurationManager.AppSettings["port"]);
                 smtpClient.Port = Convert.ToInt32(port);
                 smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
                 smtpClient.EnableSsl = true;
