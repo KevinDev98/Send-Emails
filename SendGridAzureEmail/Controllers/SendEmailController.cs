@@ -35,7 +35,7 @@ namespace SendGridAzureEmail.Controllers
             if (string.IsNullOrEmpty(parametros.Subject) || string.IsNullOrEmpty(parametros.Messagge) || string.IsNullOrEmpty(parametros.Container) || parametros.EmailsAddressTO.Count == 0)
             {
                 str_response = "Parametros vacios";
-                return Request.CreateResponse(HttpStatusCode.BadRequest, str_response);
+                return Request.CreateResponse(HttpStatusCode.Unauthorized, str_response);
             }
             try
             {
@@ -103,7 +103,7 @@ namespace SendGridAzureEmail.Controllers
                     //await smtpClient.SendMailAsync(mail);//Envio del correo
                     smtpClient.Send(mail);//Envio del correo
                     str_response = "email sent successfully";
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, str_response);
+                    return Request.CreateResponse(HttpStatusCode.OK, str_response);
                 }
                 catch (Exception ex)
                 {
@@ -123,7 +123,7 @@ namespace SendGridAzureEmail.Controllers
             if (string.IsNullOrEmpty(parametros.Subject) || string.IsNullOrEmpty(parametros.Messagge) || parametros.EmailsAddressTO.Count == 0 || parametros.Type == null)
             {
                 str_response = "Parametros vacios";
-                return Request.CreateResponse(HttpStatusCode.BadRequest, str_response);
+                return Request.CreateResponse(HttpStatusCode.Unauthorized, str_response);
             }
             try
             {
@@ -178,7 +178,7 @@ namespace SendGridAzureEmail.Controllers
                     //await smtpClient.SendMailAsync(mail);//Envio del correo
                     smtpClient.Send(mail);//Envio del correo
                     str_response = "email sent successfully";
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, str_response);
+                    return Request.CreateResponse(HttpStatusCode.OK, str_response);
                 }
                 catch (Exception ex)
                 {
@@ -198,7 +198,7 @@ namespace SendGridAzureEmail.Controllers
             if (string.IsNullOrEmpty(parametros.Subject) || string.IsNullOrEmpty(parametros.Messagge) || string.IsNullOrEmpty(parametros.Container) || parametros.EmailsAddressTO.Count == 0 || parametros.NombresArchivos.Count == 0)
             {
                 str_response = "Parametros vacios";
-                return Request.CreateResponse(HttpStatusCode.BadRequest, str_response);
+                return Request.CreateResponse(HttpStatusCode.Unauthorized, str_response);
             }
             try
             {
@@ -279,7 +279,7 @@ namespace SendGridAzureEmail.Controllers
                     //await smtpClient.SendMailAsync(mail);//Envio del correo
                     smtpClient.Send(mail);//Envio del correo
                     str_response = "email sent successfully";
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, str_response);
+                    return Request.CreateResponse(HttpStatusCode.OK, str_response);
                 }
                 catch (Exception ex)
                 {
