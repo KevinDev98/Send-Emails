@@ -52,7 +52,7 @@ namespace SendGridAzureEmail.Class
             {
                 Summary = request.Summary,
                 Location = request.Location,
-                //Attendees=request.Inivitados,
+                Attendees=request.Inivitados,
 
                 Start = new EventDateTime
                 {
