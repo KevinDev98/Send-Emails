@@ -37,84 +37,88 @@ namespace SendGridAzureEmail.Controllers
                 str_response = "Parametros vacios";
                 return Request.CreateResponse(HttpStatusCode.Unauthorized, str_response);
             }
-            try
-            {
-                //Obtención de archivos
-                string urlcont = azure.GetUrl(parametros.Container);
-                List<string> ContainersFiles = azure.ListBlobFile(PathBlob: urlcont, ContainerBlobName: parametros.Container);
-                //Inicialización de remitente
-                usermail = security.DesEncriptar(ConfigurationManager.AppSettings["MEMail"]);
-                passwordmail = security.DesEncriptar(ConfigurationManager.AppSettings["Mpwd"]);
-                mail.From = new MailAddress(usermail);
-                // Añadiendo destinatarios
-                for (int i = 0; i < parametros.EmailsAddressTO.Count; i++)
-                {
-                    mail.To.Add(parametros.EmailsAddressTO[i]);
-                }
+			else
+			{
                 try
                 {
-                    for (int i = 0; i < parametros.EmailsAddressCC.Count; i++)
+                    //Obtención de archivos
+                    string urlcont = azure.GetUrl(parametros.Container);
+                    List<string> ContainersFiles = azure.ListBlobFile(PathBlob: urlcont, ContainerBlobName: parametros.Container);
+                    //Inicialización de remitente
+                    usermail = security.DesEncriptar(ConfigurationManager.AppSettings["MEMail"]);
+                    passwordmail = ConfigurationManager.AppSettings["Mpwd"]; //security.DesEncriptar(ConfigurationManager.AppSettings["Mpwd"]);
+                    mail.From = new MailAddress(usermail);
+                    // Añadiendo destinatarios
+                    for (int i = 0; i < parametros.EmailsAddressTO.Count; i++)
                     {
-                        mail.CC.Add(parametros.EmailsAddressCC[i]);
+                        mail.To.Add(parametros.EmailsAddressTO[i]);
                     }
-                }
-                catch (Exception ex)
-                {
-
-                }
-                mail.Subject = parametros.Subject.ToString();//Titulo del correo            
-                                                             //Definiendo estructura del mensaje
-                v_Html0 = "<p>" + parametros.Messagge + "</p>" + "<br>";
-                v_Html1 = v_Html0 + "<table class='table align-content-start table-bordered shadow'> " + "<tr>" + "<td colspan=\"2\" style=\"background-color: #3366CC; color: #FFFFFF; font-weight: bold; text-align: center;\">Archivos procesados en el contenedor " + parametros.Container + "</td> " + "</tr> ";
-                if (ContainersFiles.Count > 0)
-                {
-                    v_Html2 = " <tr> " + " <td style=\"background-color: #E8E8EC; font-weight: bold\">NOMBRE</td>" + " <td style=\"background-color: #E8E8EC; font-weight: bold\">URL</td> " + " </tr> ";
-                    for (int z = 0; z < ContainersFiles.Count; z++)
+                    try
                     {
-                        v_Html2 = v_Html2 + " <tr> " + " <td>" + ContainersFiles[z] + "</td> " + " <td>" + urlcont + ContainersFiles[z] + "</td>" + " </tr> ";
+                        for (int i = 0; i < parametros.EmailsAddressCC.Count; i++)
+                        {
+                            mail.CC.Add(parametros.EmailsAddressCC[i]);
+                        }
                     }
-                    v_Html3 = " </table>";
-                    parametros.Messagge = v_Html1 + v_Html2 + v_Html3;
-                    mail.IsBodyHtml = true;
-                }
-                else
-                {
-                    mail.Body = parametros.Messagge; //"<h2 style=\"color:red;\">" + "HOLA" + "</h2>";
-                    mail.IsBodyHtml = false;
-                }
-                //Añaiendo el mensaje
-                var htmlView = AlternateView.CreateAlternateViewFromString(parametros.Messagge, null, "text/html");
-                mail.AlternateViews.Add(htmlView);
+                    catch (Exception ex)
+                    {
 
-                //Configuración de envio
-                mail.Priority = MailPriority.Normal; 
-                smtpClient.Host = security.DesEncriptar(ConfigurationManager.AppSettings["MHost"]);
-                port = security.DesEncriptar(ConfigurationManager.AppSettings["Mport"]);
-                smtpClient.Port = Convert.ToInt32(port);
-                smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
-                smtpClient.EnableSsl = true;
+                    }
+                    mail.Subject = parametros.Subject.ToString();//Titulo del correo            
+                                                                 //Definiendo estructura del mensaje
+                    v_Html0 = "<p>" + parametros.Messagge + "</p>" + "<br>";
+                    v_Html1 = v_Html0 + "<table class='table align-content-start table-bordered shadow'> " + "<tr>" + "<td colspan=\"2\" style=\"background-color: #3366CC; color: #FFFFFF; font-weight: bold; text-align: center;\">Found Files into container " + parametros.Container + "</td> " + "</tr> ";
+                    if (ContainersFiles.Count > 0)
+                    {
+                        v_Html2 = " <tr> " + " <td style=\"background-color: #E8E8EC; font-weight: bold\">File Name</td>" + " <td style=\"background-color: #E8E8EC; font-weight: bold\">Path File</td> " + " </tr> ";
+                        for (int z = 0; z < ContainersFiles.Count; z++)
+                        {
+                            v_Html2 = v_Html2 + " <tr> " + " <td>" + ContainersFiles[z] + "</td> " + " <td>" + urlcont + ContainersFiles[z] + "</td>" + " </tr> ";
+                        }
+                        v_Html3 = " </table>";
+                        parametros.Messagge = v_Html1 + v_Html2 + v_Html3;
+                        mail.IsBodyHtml = true;
+                    }
+                    else
+                    {
+                        mail.Body = parametros.Messagge; //"<h2 style=\"color:red;\">" + "HOLA" + "</h2>";
+                        mail.IsBodyHtml = false;
+                    }
+                    //Añaiendo el mensaje
+                    var htmlView = AlternateView.CreateAlternateViewFromString(parametros.Messagge, null, "text/html");
+                    mail.AlternateViews.Add(htmlView);
 
-                smtpClient.UseDefaultCredentials = false;
-                NetworkCredential credential = new NetworkCredential(usermail, passwordmail);
-                smtpClient.Credentials = credential;
+                    //Configuración de envio
+                    mail.Priority = MailPriority.Normal;
+                    smtpClient.Host = security.DesEncriptar(ConfigurationManager.AppSettings["MHost"]);
+                    port = security.DesEncriptar(ConfigurationManager.AppSettings["Mport"]);
+                    smtpClient.Port = Convert.ToInt32(port);
+                    smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
+                    smtpClient.EnableSsl = true;
 
-                try
-                {
-                    //await smtpClient.SendMailAsync(mail);//Envio del correo
-                    smtpClient.Send(mail);//Envio del correo
-                    str_response = "email sent successfully";
-                    return Request.CreateResponse(HttpStatusCode.OK, str_response);
+                    smtpClient.UseDefaultCredentials = false;
+                    NetworkCredential credential = new NetworkCredential(usermail, passwordmail);
+                    smtpClient.Credentials = credential;
+
+                    try
+                    {
+                        //await smtpClient.SendMailAsync(mail);//Envio del correo
+                        smtpClient.Send(mail);//Envio del correo
+                        str_response = "email sent successfully";
+                        return Request.CreateResponse(HttpStatusCode.OK, str_response);
+                    }
+                    catch (Exception ex)
+                    {
+                        str_response = "Email NO Enviado " + ex.Message + " " + ex.InnerException;
+                        return Request.CreateResponse(HttpStatusCode.BadRequest, str_response);
+                    }
                 }
                 catch (Exception ex)
                 {
                     str_response = "Email NO Enviado " + ex.Message + " " + ex.InnerException;
                     return Request.CreateResponse(HttpStatusCode.BadRequest, str_response);
                 }
-            }
-            catch (Exception ex)
-            {
-                str_response = "Email NO Enviado " + ex.Message + " " + ex.InnerException;
-                return Request.CreateResponse(HttpStatusCode.BadRequest, str_response);
+
             }
 
         }
@@ -129,7 +133,7 @@ namespace SendGridAzureEmail.Controllers
             {
                 //definiendo remitente
                 usermail = security.DesEncriptar(ConfigurationManager.AppSettings["MEMail"]); //security.DesEncriptar("ZABhAG4ALgBnAHQAegBlAGwAaQBvAHMAYQBAAGcAbQBhAGkAbAAuAGMAbwBtAA==");
-                passwordmail = security.DesEncriptar(ConfigurationManager.AppSettings["Mpwd"]); //security.DesEncriptar("SwBlAHYAaQBuAGkAbgBnAGkAbgBmAA==");
+                passwordmail = ConfigurationManager.AppSettings["Mpwd"]; //security.DesEncriptar(ConfigurationManager.AppSettings["Mpwd"]); //security.DesEncriptar("SwBlAHYAaQBuAGkAbgBnAGkAbgBmAA==");
                 mail.From = new MailAddress(usermail);
                 //añdiendo destinatarios
                 for (int i = 0; i < parametros.EmailsAddressTO.Count; i++)
@@ -206,7 +210,7 @@ namespace SendGridAzureEmail.Controllers
                 List<string> ContainersFiles = azure.ListBlobFile(PathBlob: urlcont, ContainerBlobName: parametros.Container);
                 //definiendo remitente
                 usermail = security.DesEncriptar(ConfigurationManager.AppSettings["MEMail"]); //security.DesEncriptar("ZABhAG4ALgBnAHQAegBlAGwAaQBvAHMAYQBAAGcAbQBhAGkAbAAuAGMAbwBtAA==");
-                passwordmail = security.DesEncriptar(ConfigurationManager.AppSettings["Mpwd"]); //security.DesEncriptar("SwBlAHYAaQBuAGkAbgBnAGkAbgBmAA==");
+                passwordmail = ConfigurationManager.AppSettings["Mpwd"]; //security.DesEncriptar(ConfigurationManager.AppSettings["Mpwd"]); //security.DesEncriptar("SwBlAHYAaQBuAGkAbgBnAGkAbgBmAA==");
                 mail.From = new MailAddress(usermail);
                 //añdiendo destinatarios
                 for (int i = 0; i < parametros.EmailsAddressTO.Count; i++)

@@ -1,4 +1,7 @@
-﻿using Azure.Storage.Blobs;
+﻿using Azure.Core;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
+using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using System;
 using System.Collections.Generic;
@@ -15,15 +18,36 @@ namespace SendGridAzureEmail.Class
         SecurityClass Security = new SecurityClass();
         static BlobContainerClient container;
         static BlobClient BlobStrg;
-        static string Str_Connect = ConfigurationManager.AppSettings["ContenedoresKey"]; //"RABlAGYAYQB1AGwAdABFAG4AZABwAG8AaQBuAHQAcwBQAHIAbwB0AG8AYwBvAGwAPQBoAHQAdABwAHMAOwBBAGMAYwBvAHUAbgB0AE4AYQBtAGUAPQBzAHQAbwByAGEAZwBlAGEAYwBjAG8AdQBuAHQAZQB0AGwAOQA4ADsAQQBjAGMAbwB1AG4AdABLAGUAeQA9ADAATwBkACsAbQBhAGsAZwBoAG0AbwBZAEsATgBIAEMAQgBnAHEAVQBRAHQAbABtADkAdAA3AC8AMAB3AEoAUQBsAFcAWgBiAGoAawBUAHoAOABxAEMASgBVAC8AUQBTAEYASQBUAG4ALwBUAHEAVwBUAFEAYQAvAHoARQBrAFIAQwAzADMAYwB1ADAAcQBTAFcAbgBuAHYAKwBBAFMAdABiAEEANABtACsAUQA9AD0AOwBFAG4AZABwAG8AaQBuAHQAUwB1AGYAZgBpAHgAPQBjAG8AcgBlAC4AdwBpAG4AZABvAHcAcwAuAG4AZQB0AA==";
-        string Str_Connect2;
+        static string Str_Connect = "";
         WebClient clientWeb;
         Stream streamAzure;
+        BlobServiceClient AzureClient;
+
+        public AzureClass()
+		{
+            string KVName = ConfigurationManager.AppSettings["KVName"];
+            string KVUri = "https://" + KVName + ".vault.azure.net/";
+            SecretClientOptions Secretoptions = new SecretClientOptions()
+            {
+                Retry =
+            {
+                Delay= TimeSpan.FromSeconds(2),
+                MaxDelay = TimeSpan.FromSeconds(16),
+                MaxRetries = 5,
+                Mode = RetryMode.Exponential
+            }
+            };
+            SecretClient client = new SecretClient(new Uri(KVUri), new DefaultAzureCredential(), Secretoptions);
+            string ZConnString = ConfigurationManager.AppSettings["ZConnString"];
+            KeyVaultSecret Endpoint = client.GetSecret(ZConnString);
+
+            Str_Connect = Endpoint.Value.ToString();
+            AzureClient = new BlobServiceClient(Str_Connect);
+        }   
         public List<String> ListBlobFile(string PathBlob, string ContainerBlobName)
         {
             List<String> listName = new List<String>();
-            Str_Connect2 = Security.DesEncriptar(Str_Connect);
-            BlobContainerClient containerClient = new BlobContainerClient(Str_Connect2, ContainerBlobName);//Recibe cadena de conexion y nombre de contenedor
+            BlobContainerClient containerClient = new BlobContainerClient(Str_Connect, ContainerBlobName);//Recibe cadena de conexion y nombre de contenedor
             var ListblobFiles = containerClient.GetBlobs();
             foreach (BlobItem blobItem in ListblobFiles)
             {
@@ -34,8 +58,7 @@ namespace SendGridAzureEmail.Class
         }
         public string GetUrl(string ContainerName)//Obtiene la URL del contenedor
         {
-            Str_Connect2 = Security.DesEncriptar(Str_Connect);
-            BlobStrg = new BlobClient(Str_Connect2, ContainerName, "");
+            BlobStrg = new BlobClient(Str_Connect, ContainerName, "");
             string url = BlobStrg.Uri.ToString() + "/";
             return url;
         }
@@ -43,8 +66,8 @@ namespace SendGridAzureEmail.Class
         {
             try
             {
-                Str_Connect2 = Security.DesEncriptar(Str_Connect);
-                BlobStrg = new BlobClient(Str_Connect2, ContainerName, FileName);
+                Str_Connect = Security.DesEncriptar(Str_Connect);
+                BlobStrg = new BlobClient(Str_Connect, ContainerName, FileName);
                 clientWeb = new WebClient();
                 string urlfile = BlobStrg.Uri.ToString();
                 FileName = BlobStrg.Name;
