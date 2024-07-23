@@ -69,7 +69,7 @@ namespace SendGridAzureEmail.Controllers
 					mail.Subject = parametros.Subject.ToString();//Titulo del correo            
 																 //Definiendo estructura del mensaje
 					v_Html0 = "<p>" + parametros.Messagge + "</p>" + "<br>";
-					v_Html1 = v_Html0 + "<table class='table align-content-start table-bordered shadow'> " + "<tr>" + "<td colspan=\"2\" style=\"background-color: #3366CC; color: #FFFFFF; font-weight: bold; text-align: center;\">Found Files into container " + parametros.Container + "</td> " + "</tr> ";
+					v_Html1 = v_Html0 + "<table class='table align-content-start table-bordered shadow'> " + "<tr>" + "<td colspan=\"2\" style=\"background-color: #3366CC; color: #FFFFFF; font-weight: bold; text-align: center;\">Found Files into the container " + parametros.Container + "</td> " + "</tr> ";
 					if (ContainersFiles.Count > 0)
 					{
 						v_Html2 = " <tr> " + " <td style=\"background-color: #E8E8EC; font-weight: bold\">File Name</td>" + " <td style=\"background-color: #E8E8EC; font-weight: bold\">Path File</td> " + " </tr> ";
