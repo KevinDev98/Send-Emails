@@ -102,18 +102,18 @@ namespace SendGridAzureEmail.Controllers
                 {
                     //await smtpClient.SendMailAsync(mail);//Envio del correo
                     smtpClient.Send(mail);//Envio del correo
-                    str_response = "email sent successfully";
+                    str_response = "The email sent successfully";
                     return Request.CreateResponse(HttpStatusCode.OK, str_response);
                 }
                 catch (Exception ex)
                 {
-                    str_response = "Email NO Enviado " + ex.Message + " " + ex.InnerException;
+                    str_response = "The email was not send " + ex.Message + " " + ex.InnerException;
                     return Request.CreateResponse(HttpStatusCode.BadRequest, str_response);
                 }
             }
             catch (Exception ex)
             {
-                str_response = "Email NO Enviado " + ex.Message + " " + ex.InnerException;
+                str_response = "The email was not send " + ex.Message + " " + ex.InnerException;
                 return Request.CreateResponse(HttpStatusCode.BadRequest, str_response);
             }
 
@@ -177,18 +177,18 @@ namespace SendGridAzureEmail.Controllers
                 {
                     //await smtpClient.SendMailAsync(mail);//Envio del correo
                     smtpClient.Send(mail);//Envio del correo
-                    str_response = "email sent successfully";
+                    str_response = "The email sent successfully";
                     return Request.CreateResponse(HttpStatusCode.OK, str_response);
                 }
                 catch (Exception ex)
                 {
-                    str_response = "Email NO Enviado " + ex.Message + " " + ex.InnerException;
+                    str_response = "The email was not send " + ex.Message + " " + ex.InnerException;
                     return Request.CreateResponse(HttpStatusCode.BadRequest, str_response); ;
                 }
             }
             catch (Exception ex)
             {
-                str_response = "Email NO Enviado " + ex.Message + " " + ex.InnerException;
+                str_response = "The email was not send " + ex.Message + " " + ex.InnerException;
                 return Request.CreateResponse(HttpStatusCode.BadRequest, str_response);
             }
 
@@ -278,18 +278,18 @@ namespace SendGridAzureEmail.Controllers
                 {
                     //await smtpClient.SendMailAsync(mail);//Envio del correo
                     smtpClient.Send(mail);//Envio del correo
-                    str_response = "email sent successfully";
+                    str_response = "The email sent successfully";
                     return Request.CreateResponse(HttpStatusCode.OK, str_response);
                 }
                 catch (Exception ex)
                 {
-                    str_response = "Email NO Enviado " + ex.Message + " " + ex.InnerException;
+                    str_response = "The email was not send " + ex.Message + " " + ex.InnerException;
                     return Request.CreateResponse(HttpStatusCode.BadRequest, str_response);
                 }
             }
             catch (Exception ex)
             {
-                str_response = "Email NO Enviado " + ex.Message + " " + ex.InnerException;
+                str_response = "The email was not send " + ex.Message + " " + ex.InnerException;
                 return Request.CreateResponse(HttpStatusCode.BadRequest, str_response);
             }
         }
